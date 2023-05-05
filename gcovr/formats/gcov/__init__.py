@@ -94,6 +94,18 @@ class GcovHandler(BaseHandler):
                 action="append",
             ),
             GcovrConfigOption(
+                "gcov_ignore_exitcodes",
+                ["--gcov-ignore-exitcodes"],
+                group="gcov_options",
+                help=(
+                    "Ignore exitcode errors in GCOV command."
+                    "Default: {default!s}."
+                ),
+                action="append",
+                type=int,
+                default=[],
+            ),
+            GcovrConfigOption(
                 "gcov_filter",
                 ["--gcov-filter"],
                 group="filter_options",

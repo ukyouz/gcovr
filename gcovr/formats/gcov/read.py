@@ -488,7 +488,7 @@ class GcovProgram:
                     GcovProgram.__cmd == cmd
                 ), f"Gcov command must not be changed, expected '{GcovProgram.__cmd}', got '{cmd}'"
 
-    def identify_and_cache_capabilities(self) -> None:
+    def identify_and_cache_capabilities(self, options: Options) -> None:
         with GcovProgram.LockContext(GcovProgram.__lock):
             if not GcovProgram.__default_options:
                 GcovProgram.__default_options = [
@@ -511,7 +511,8 @@ class GcovProgram:
                         "identical file names may result in incorrect coverage."
                     )
             if GcovProgram.__exitcode_to_ignore is None:
-                GcovProgram.__exitcode_to_ignore = [0]  # SUCCESS
+                exitcodes_to_ignore = [0] + options.gcov_ignore_exitcodes  # 0 is SUCCESS
+                GcovProgram.__exitcode_to_ignore = exitcodes_to_ignore
                 if not self.__check_gcov_help_content("LLVM"):
                     GcovProgram.__exitcode_to_ignore.append(6)  # WRITE GCOV ERROR
 
@@ -620,7 +621,7 @@ def run_gcov_and_process_files(
     err = None
     try:
         gcov_cmd = GcovProgram(options.gcov_cmd)
-        gcov_cmd.identify_and_cache_capabilities()
+        gcov_cmd.identify_and_cache_capabilities(options)
 
         # ATTENTION:
         # This lock is essential for parallel processing because without
