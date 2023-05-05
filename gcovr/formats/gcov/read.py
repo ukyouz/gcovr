@@ -564,6 +564,9 @@ class GcovProgram:
             raise RuntimeError(
                 f"GCOV returncode was {gcov_process.returncode} (exited by signal)."
             )
+        elif gcov_process.returncode == 5:
+            logger.warning("No branches.")
+            return (out, err)
         elif gcov_process.returncode != 0:
             raise RuntimeError(f"GCOV returncode was {gcov_process.returncode}.")
 
